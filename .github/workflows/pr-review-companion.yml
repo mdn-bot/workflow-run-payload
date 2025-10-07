@@ -1,0 +1,17 @@
+name: PR review companion
+
+on:
+  workflow_run:
+    workflows: ["PR Test"]
+    types:
+    - completed
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Print PR payload
+        env:
+          PAYLOAD: ${{ toJson(github.event.workflow_run.pull_requests) }}
+        run: echo "$PAYLOAD" | jq .
